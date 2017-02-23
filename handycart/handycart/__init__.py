@@ -1,0 +1,1 @@
+from .handycart import app
