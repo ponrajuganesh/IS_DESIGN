@@ -53,4 +53,4 @@ def get_products():
 	print ("Full products " + str(len(products)), file=sys.stderr)
 	categories = query_db("select * from category")
 	print ("CATEGORIES " + str(categories), file=sys.stderr)
-	return render_template('products.html', categories=categories, products=products)
+	return render_template('products.html', categories=categories, products=products, category_id=request.args.get('category_id'))
