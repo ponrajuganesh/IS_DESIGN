@@ -45,12 +45,13 @@ def query_db(query, args=(), one=False):
 
 @app.route('/')
 def index():
-	return redirect(url_for('get_products', category_id="2"))
+	return redirect(url_for('get_products', category_id="3"))
 
 @app.route('/products')
 def get_products():
+	selected_category = query_db("select name from category where id = ?", [request.args.get('category_id')], one=True)
 	products = query_db("select * from product where category_id = ?", [request.args.get('category_id')])
 	print ("Full products " + str(len(products)), file=sys.stderr)
-	categories = query_db("select * from category")
+	categories = query_db("select * from category order by name")
 	print ("CATEGORIES " + str(categories), file=sys.stderr)
-	return render_template('products.html', categories=categories, products=products, category_id=request.args.get('category_id'))
+	return render_template('products.html', categories=categories, products=products, category_id=request.args.get('category_id'), category_name=selected_category['name'])
