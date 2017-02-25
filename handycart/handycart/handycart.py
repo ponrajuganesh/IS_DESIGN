@@ -17,6 +17,7 @@ app = Flask(__name__)
 # app.config.from_object(__name__)
 # app.config.from_envvar('HANDYCART_SETTINGS', silent=True)
 
+CATEGORIES = []
 
 def get_db():
 	"""Opens a new database connection if there is none yet for the
@@ -42,13 +43,14 @@ def query_db(query, args=(), one=False):
 	rv = cur.fetchall()
 	return (rv[0] if rv else None) if one else rv
 
-
 @app.route('/')
 def index():
-	return redirect(url_for('get_products'))
+	return redirect(url_for('get_products', category_id="2"))
 
-@app.route('/products', methods=['GET', 'POST'])
+@app.route('/products')
 def get_products():
-	result = query_db("select * from category")
-	print (len(result), file=sys.stderr)
-	return 'Hello'
+	products = query_db("select * from product where category_id = ?", [request.args.get('category_id')])
+	print ("Full products " + str(len(products)), file=sys.stderr)
+	categories = query_db("select * from category")
+	print ("CATEGORIES " + str(categories), file=sys.stderr)
+	return render_template('products.html', categories=categories, products=products)
