@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Subscribe</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.1/js/tether.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+  <script type="text/javascript">
+    var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  </script>
+
+  <script type="text/javascript">
+    $( document ).ready(function() {
+      $("#{{category_id}}").addClass("active");
+
+      $('.dropdown-menu a').click(function(){
+        $('#product_frequency').text($(this).text());
+      });
+    });
+
+
+  </script>
+</head>
+
+<body>
+  <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="#">Handy Cart</a>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Subscription <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Order</a>
+          </li>
+          <li class="nav-item" style="float:right;">
+            <a class="nav-link" href="#">Profile</a>
+          </li>
+        </ul>
+      </div>
+  </nav>
+<br/>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col_3">
+      <div class="list-group">
+        {% for category in categories %}
+          <a id="{{category.id}}" href="{{url_for('get_products', category_id=category.id)}}" class="list-group-item list-group-item-action categories">{{category.name}}</a>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col_9">
+      <div class="container-fluid">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{url_for('get_products', category_id=category_id)}}">{{category_name}}</a></li>
+          <li class="breadcrumb-item active">{{product.name}}</li>
+        </ol>
+
+        <!-- Actual subscription options -->
+        <div class="row">
+
+          <!-- Large Image of the Product -->
+          <div class="col_4">
+            <div class="card">
+              <img class="card-img-top img-fluid" src="{{url_for('static', filename='img/%s' % product.img_src)}}" alt="Card image cap">
+            </div>
+          </div>
+          <div class="col_8">
+            <dl class="row">
+              <dt class="col-sm-3">Qty</dt>
+              <dd class="col-sm-9">
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="product_quantity" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{selected_quantity}}
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for quantity in quantities %}
+                      <a class="dropdown-item" href="{{url_for('subscribe_product', product_id=product.id, category_id=category_id, category_name=category_name, quantity='%s' % quantity.quantity)}}">{{quantity.quantity}} {{units_name}}</a>
+                    {% endfor %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{url_for('subscribe_product', product_id=product.id, category_id=category_id, category_name=category_name, quantity='ALL')}}">ALL</a>
+                  </div>
+                </div>
+              </dd>
+
+              <dt class="col-sm-3">Frequency</dt>
+              <dd class="col-sm-9">
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="product_frequency" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Frequency
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Weekly</a>
+                    <a class="dropdown-item" href="#">Bi Weekly</a>
+                    <a class="dropdown-item" href="#">Monthly</a>
+                  </div>
+                </div>
+              </dd>
+
+              <dt class="col-sm-3">Days</dt>
+              <dd class="col-sm-9">
+                <div class="btn-group-sm" data-toggle="buttons">
+                  <label class="btn btn-primary active">
+                    <input type="checkbox" autocomplete="off"> M
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="checkbox" autocomplete="off"> T
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="checkbox" autocomplete="off"> W
+                  </label>
+                  <label class="btn btn-primary active">
+                    <input type="checkbox" autocomplete="off"> T
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="checkbox" autocomplete="off"> F
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="checkbox" autocomplete="off"> S
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="checkbox" autocomplete="off"> S
+                  </label>
+                </div>
+              </dd>
+            </dl>
+            </div>
+
+        </div> <!-- Actual subscription options ends -->
+        <div> <p> {{product.description}} </p> </div>
+        <div id="seller_table">
+          <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Seller</th>
+                <th>Price</th>
+                <th>Qty</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for price_info in prices %}
+                <tr>
+                  <td scope="row">
+                    <div class="radio">
+                      <label><input type="radio" name="selected_seller"></label>
+                    </div>
+                  </td>
+                  <td> {{price_info.name}} </td>
+                  <td> {{price_info.cost}} </td>
+                  <td> {{price_info.quantity}} {{units_name}} </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
