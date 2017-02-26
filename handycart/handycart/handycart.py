@@ -65,9 +65,23 @@ def get_products():
 
 @app.route('/subscribe')
 def subscribe_product():
-	prices = query_db("select price.*, seller.* from price, seller where price.seller_id = seller.id and product_id = ?", [request.args.get('product_id')])
-	product = query_db("select * from product where id = ?", [request.args.get('product_id')], one=True)
+	quantity, product_id = request.args.get('quantity'), request.args.get('product_id')
+	prices, quantities = None, None
+	if quantity and not quantity == "ALL":
+		prices = query_db("select price.*, seller.* from price, seller where price.seller_id = seller.id and product_id = ? and price.quantity = ? order by price.cost", [product_id, quantity])
+		quantities = query_db("select price.quantity from price, seller where price.seller_id = seller.id and product_id = ? order by price.cost", [product_id])
+	else:
+		quantity = "ALL"
+		prices = query_db("select price.*, seller.* from price, seller where price.seller_id = seller.id and product_id = ? order by price.cost", [product_id])
+		quantities = query_db("select price.quantity from price, seller where price.seller_id = seller.id and product_id = ? order by price.cost", [product_id])
+
+	# prices = query_db("select price.*, seller.* from price, seller where price.seller_id = seller.id and product_id = ? order by price.cost", [request.args.get('product_id')])
+	product = query_db("select * from product where id = ?", [product_id], one=True)
 	unit = query_db("select name from units where id = ?", [product['units_id']], one=True)
+
+
+
 	print ("Full prices " + str(len(prices)), file=sys.stderr)
+
 	print ("Product " + str(product['name']))
-	return render_template('subscribe.html', product=product, prices=prices, units_name=unit['name'], category_id=request.args.get('category_id'), category_name=request.args.get('category_name'), categories=g.categories)
+	return render_template('subscribe.html', selected_quantity=quantity, quantities=quantities, product=product, prices=prices, units_name=unit['name'], category_id=request.args.get('category_id'), category_name=request.args.get('category_name'), categories=g.categories)
