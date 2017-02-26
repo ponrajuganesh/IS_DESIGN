@@ -57,14 +57,14 @@
         <ol class="breadcrumb">
           <li class="breadcrumb-item active">{{category_name}}</li>
         </ol>
-          <div class="row">
-            {% for product in products %}
-                <div class="col_4">
-                  <a href="{{url_for('subscribe_product', product_id=product.id, category_id=category_id, category_name=category_name)}}"><img src="{{url_for('static', filename='img/%s' % product.img_src)}}" class="img-thumbnail" alt="Responsive image"></a>
-                  <p align="center"> {{product.name}} </p>
-                </div>
-            {% endfor %}
-          </div>
+        <div class="row">
+          {% for product in products %}
+              <div class="col_4">
+                <a href="{{url_for('subscribe_product', product_id=product.id, category_id=category_id, category_name=category_name)}}"><img src="{{url_for('static', filename='img/%s' % product.img_src)}}" class="img-thumbnail" alt="Responsive image"></a>
+                <p align="center"> {{product.name}} </p>
+              </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
