@@ -1,6 +1,7 @@
 from __future__ import print_function
 from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, session, url_for, redirect, render_template, abort, g, flash, _app_ctx_stack
+from werkzeug import check_password_hash, generate_password_hash
 
 import os
 import sys
@@ -30,7 +31,6 @@ def get_db():
 	return top.sqlite_db
 
 
-
 @app.teardown_appcontext
 def close_database(exception):
 	"""Closes the database again at the end of the request."""
@@ -44,6 +44,20 @@ def query_db(query, args=(), one=False):
 	rv = cur.fetchall()
 	return (rv[0] if rv else None) if one else rv
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	error = None
+	if request.method == 'POST':
+		user = query_db("select * from user where email = ?", [request.form['email']], one=True)
+		if user is None:
+			error = 'Invalid username'
+		elif not check_password_hash(user['password'], request.form['password']):
+			error = 'Invalid password'
+		else:
+			flash('You were logged in')
+			session['user_id'] = user['id']
+			return redirect(url_for('get_products', category_id="3"))
+	return render_template('login.html', error=error)
 
 @app.before_request
 def before_request():
@@ -52,21 +66,20 @@ def before_request():
 
 @app.route('/')
 def index():
-	return redirect(url_for('get_products', category_id="3"))
+	return redirect(url_for('login'))
 
 @app.route('/products')
 def get_products():
 	selected_category = query_db("select name from category where id = ?", [request.args.get('category_id')], one=True)
 	products = query_db("select * from product where category_id = ?", [request.args.get('category_id')])
-	print ("Full products " + str(len(products)), file=sys.stderr)
 	categories = query_db("select * from category order by name")
-	print ("CATEGORIES " + str(categories), file=sys.stderr)
 	return render_template('products.html', categories=categories, products=products, category_id=request.args.get('category_id'), category_name=selected_category['name'])
 
 @app.route('/subscribe')
 def subscribe_product():
 	quantity, product_id = request.args.get('quantity'), request.args.get('product_id')
 	prices, quantities = None, None
+
 	if quantity and not quantity == "ALL":
 		prices = query_db("select price.*, seller.* from price, seller where price.seller_id = seller.id and product_id = ? and price.quantity = ? order by price.cost", [product_id, quantity])
 		quantities = query_db("select price.quantity from price, seller where price.seller_id = seller.id and product_id = ? order by price.cost", [product_id])
@@ -75,13 +88,6 @@ def subscribe_product():
 		prices = query_db("select price.*, seller.* from price, seller where price.seller_id = seller.id and product_id = ? order by price.cost", [product_id])
 		quantities = query_db("select price.quantity from price, seller where price.seller_id = seller.id and product_id = ? order by price.cost", [product_id])
 
-	# prices = query_db("select price.*, seller.* from price, seller where price.seller_id = seller.id and product_id = ? order by price.cost", [request.args.get('product_id')])
 	product = query_db("select * from product where id = ?", [product_id], one=True)
 	unit = query_db("select name from units where id = ?", [product['units_id']], one=True)
-
-
-
-	print ("Full prices " + str(len(prices)), file=sys.stderr)
-
-	print ("Product " + str(product['name']))
 	return render_template('subscribe.html', selected_quantity=quantity, quantities=quantities, product=product, prices=prices, units_name=unit['name'], category_id=request.args.get('category_id'), category_name=request.args.get('category_name'), categories=g.categories)
