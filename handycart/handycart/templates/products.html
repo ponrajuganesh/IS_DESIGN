@@ -1,53 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Subscribe</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.1/js/tether.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-
-  <script type="text/javascript">
-    var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-  </script>
-
-  <script type="text/javascript">
-    $( document ).ready(function() {
-      $("#{{category_id}}").addClass("active");
-    });
-  </script>
-</head>
-
-<body style="  background: #18BC9C;
-  color: rgba(255, 255, 255, 0.75);
-  background-attachment: fixed, fixed, fixed;
-  background-image: url('static/img/overlay2.png'), url('static/img/overlay4.svg'), linear-gradient(45deg, #4361c2, #4fa49a 50%, #9dc66b 95%);
-  background-size: auto, cover, cover;
-  background-position: top left, center center, center center;">
-  <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <a class="navbar-brand" href="#">Handy Cart</a>
-
-      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Subscription <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Order</a>
-          </li>
-          <li class="nav-item" style="float:right;">
-            <a class="nav-link" href="#">Profile</a>
-          </li>
-        </ul>
-      </div>
-  </nav>
-<br/>
+{% extends "customer-layout.html" %}
+{% block body %}
 <div class="container-fluid">
   <div class="row">
     <div class="col_3">
@@ -74,6 +26,4 @@
     </div>
   </div>
 </div>
-
-</body>
-</html>
+{% endblock %}
