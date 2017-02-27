@@ -9,7 +9,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.1/js/tether.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-
+  <script src="{{ url_for('static', filename='bootstrap-notify.js') }}"></script>
+  <script src="{{ url_for('static', filename='bootstrap-notify.min.js') }}"></script>
   <script type="text/javascript">
     var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
   </script>
@@ -21,12 +22,12 @@
       $('.dropdown-menu a').click(function(){
         $('#product_frequency').text($(this).text());
         $('#frequency').val($(this).attr("id"));
-        alert($('#frequency').val());
+        // alert($('#frequency').val());
       });
 
       $('.input_radio').on('change', function() {
          $('#price_id').val($('input[name=selected_price]:checked').val());
-         alert($('#price_id').val());
+        //  alert($('#price_id').val());
       });
 
       var days = []
@@ -37,8 +38,31 @@
         });
 
         $('#days').val(days.join(","));
-        alert($('#days').val());
+        // alert($('#days').val());
       });
+
+      $("form").submit(function() {
+        var message;
+        if (! $('#frequency').val()) {
+          message = "Please select the frequency of delivery";
+        }
+        else if (! $('#price_id').val()) {
+          message = "Please select the seller";
+        }
+        else if (days.length == 0) {
+          message = "Please select the days to deliver";
+        }
+
+        if (message) {
+          $.notify({
+            message: message
+          },{
+            type: 'danger'
+          });
+          return false;
+        }
+
+      })
 
     });
 
@@ -63,7 +87,7 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
         <ul class="navbar-nav">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Subscription <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{{url_for('get_subscriptions')}}">Subscription <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Order</a>
@@ -189,10 +213,10 @@
             </tbody>
           </table>
         </div>
-        <form action="" method="post">
-          <input type="hidden" id="price_id" value="" />
-          <input type="hidden" id="frequency" value="" />
-          <input type="hidden" id="days" value="" />
+        <form action="{{url_for('add_subscription')}}" method="post">
+          <input type="hidden" id="price_id" name="price_id" value="" />
+          <input type="hidden" id="frequency" name="frequency" value="" />
+          <input type="hidden" id="days" name="days" value="" />
 
           <div class="text-right">
             <a class="btn btn-danger" href="{{url_for('get_products', category_id=category_id)}}" role="button">Cancel</a>
