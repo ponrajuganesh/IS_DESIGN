@@ -91,3 +91,12 @@ def subscribe_product():
 	product = query_db("select * from product where id = ?", [product_id], one=True)
 	unit = query_db("select name from units where id = ?", [product['units_id']], one=True)
 	return render_template('subscribe.html', selected_quantity=quantity, quantities=quantities, product=product, prices=prices, units_name=unit['name'], category_id=request.args.get('category_id'), category_name=request.args.get('category_name'), categories=g.categories)
+
+@app.route('/add_subscription', methods=['POST'])
+def add_subscription():
+	frequency, days, price_id = request.form['frequency'], request.form['days'], request.form['price_id']
+
+	db = get_db()
+	db.execute("insert into subscription (user_id, price_id, days, frequency) values (?, ?, ?, ?)", [session['user_id'], price_id, days, frequency])
+	db.commit()
+	return 'Done!'
