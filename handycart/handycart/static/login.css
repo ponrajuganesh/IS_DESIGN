@@ -1,40 +1,73 @@
-#login {
-  padding-top: 20%;
-  padding-bottom: 40px;
-  background-color: #eee;
+.login {
+  margin: 20px auto;
+  width: 300px;
 }
 
-.form-signin {
-  max-width: 50%;
-  padding: 5%;
+.login-screen {
+  background-color: #FFF;
+  padding: 20px;
+  border-radius: 5px
+}
+
+.app-title {
+  text-align: center;
+  color: #777;
+}
+
+.control-group {
+  margin-bottom: 10px;
+}
+
+.login input {
+  text-align: center;
+  background-color: #ECF0F1;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  font-size: 16px;
+  font-weight: 200;
+  padding: 10px 0;
+  width: 250px;
+  transition: border .5s;
+}
+
+.login input:focus {
+  border: 2px solid #3498DB;
+  box-shadow: none;
+}
+
+.btn-login-form {
+  border: 2px solid transparent;
+  background: #3498DB;
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 25px;
+  padding: 10px 0;
+  text-decoration: none;
+  text-shadow: none;
+  border-radius: 3px;
+  box-shadow: none;
+  transition: 0.25s;
+  display: block;
+  width: 250px;
   margin: 0 auto;
 }
-.form-signin .form-signin-heading,
-.form-signin .checkbox {
-  margin-bottom: 10px;
+
+.btn:hover {
+  background-color: #2980B9;
 }
-.form-signin .checkbox {
-  font-weight: normal;
+
+.navbar{
+  background: #2c3e50 !important;
 }
-.form-signin .form-control {
-  position: relative;
-  height: auto;
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-  padding: 10px;
-  font-size: 16px;
+.card-block > * {
+  color: black;
 }
-.form-signin .form-control:focus {
-  z-index: 2;
-}
-.form-signin input[type="email"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+
+body {
+    background: #18BC9C !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    background-attachment: fixed, fixed, fixed !important;
+    background-image: url('img/overlay2.png'), url('img/overlay4.svg'), linear-gradient(45deg, #4361c2, #4fa49a 50%, #9dc66b 95%) !important;
+    background-size: auto, cover, cover !important;
+    background-position: top left, center center, center center !important;
 }
