@@ -68,22 +68,17 @@
   </script>
 </head>
 
-<body style="  background: #18BC9C;
-  color: rgba(255, 255, 255, 0.75);
-  background-attachment: fixed, fixed, fixed;
-  background-image: url('static/img/overlay2.png'), url('static/img/overlay4.svg'), linear-gradient(45deg, #4361c2, #4fa49a 50%, #9dc66b 95%);
-  background-size: auto, cover, cover;
-  background-position: top left, center center, center center;">
+<body>
   <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="#">Handy Cart</a>
+      <a class="navbar-brand" href="{{url_for('get_products', category_id='3')}}">Handy Cart</a>
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
         <ul class="navbar-nav">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Subscription <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="{{url_for('get_subscriptions')}}">Subscription <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Order</a>
