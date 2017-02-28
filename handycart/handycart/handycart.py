@@ -122,8 +122,7 @@ def add_subscription():
 	db = get_db()
 	db.execute("insert into subscription (user_id, price_id, days, frequency) values (?, ?, ?, ?)", [session['user_id'], price_id, days, frequency])
 	db.commit()
-	# return redirect(url_for('get_products', category_id="3"))
-	return "Inserted!"
+	return redirect(url_for('get_subscriptions'))
 
 @app.route('/get_subscriptions')
 def get_subscriptions():
