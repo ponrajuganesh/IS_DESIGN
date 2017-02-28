@@ -45,3 +45,12 @@
         width: 100%;
     }
 }
+
+body {
+    background: #18BC9C !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    background-attachment: fixed, fixed, fixed !important;
+    background-image: url('img/overlay2.png'), url('img/overlay4.svg'), linear-gradient(45deg, #4361c2, #4fa49a 50%, #9dc66b 95%) !important;
+    background-size: auto, cover, cover !important;
+    background-position: top left, center center, center center !important;
+}
