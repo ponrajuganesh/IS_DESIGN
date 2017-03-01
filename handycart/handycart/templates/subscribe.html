@@ -1,11 +1,22 @@
 {% extends "customer-layout.html" %}
 {% block body %}
 <div class="container-fluid">
+  <div id="mascot_block" class="row" style="display:none;">
+    <div class="col_4"></div>
+    <div class="col_6">
+      <wordwrap>
+        <div class="alert alert-success" role="alert" id="mascot_message">
+          {{product.name}}
+        </div>
+      </wordwrap>
+    </div>
+    <img class="text-right col_1" src="{{url_for('static', filename='img/potato.jpg')}}" style="height: 100px; width: 100px; float: right; border-radius: 25px;">
+  </div>
   <div class="row">
     <div class="col_3">
       <div class="list-group">
         {% for category in categories %}
-          <a id="{{category.id}}" href="{{url_for('get_products', category_id=category.id)}}" class="list-group-item list-group-item-action categories">{{category.name}}</a>
+          <a id="{{category.id}}" href="{{url_for('get_products', category_id=category.id, is_seller=is_seller)}}" class="list-group-item list-group-item-action categories">{{category.name}}</a>
         {% endfor %}
       </div>
     </div>
