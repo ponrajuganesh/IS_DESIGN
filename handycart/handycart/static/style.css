@@ -54,3 +54,5 @@ body {
     background-size: auto, cover, cover !important;
     background-position: top left, center center, center center !important;
 }
+
+.center {text-align: center; margin-left: auto; margin-right: auto; margin-bottom: auto; margin-top: auto;}
