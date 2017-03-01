@@ -39,10 +39,9 @@
         });
 
         $('#days').val(days.join(","));
-        // alert($('#days').val());
       });
 
-      $("form").submit(function() {
+      $('#subscribe_button').bind('click', function() {
         var message;
         if (! $('#frequency').val()) {
           message = "Please select the frequency of delivery";
@@ -62,7 +61,19 @@
           });
           return false;
         }
-      })
+
+        $.getJSON($SCRIPT_ROOT + '/add_subscription', {
+          frequency: $('#frequency').val(),
+          days: $("#days").val(),
+          price_id: $('#price_id').val()
+        }, function(data) {
+          $('#mascot_block').removeAttr("style");
+          var product_name = $('#mascot_message').text();
+          $('#mascot_message').text('');
+          $('#mascot_message').html(product_name + " succesfully subcribed. Check your <a href='{{url_for('get_subscriptions')}}'>Subscriptions</a>");
+        });
+        return false;
+      });
 
     });
   </script>
@@ -85,6 +96,9 @@
           </li>
           <li class="nav-item" style="float:right;">
             <a class="nav-link" href="#">Profile</a>
+          </li>
+          <li class="nav-item" style="float:right;">
+            <a class="nav-link" href="{{url_for('logout')}}">Sign Out</a>
           </li>
         </ul>
       </div>
