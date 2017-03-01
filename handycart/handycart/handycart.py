@@ -1,6 +1,6 @@
 from __future__ import print_function
 from sqlite3 import dbapi2 as sqlite3
-from flask import Flask, request, session, url_for, redirect, render_template, abort, g, flash, _app_ctx_stack
+from flask import Flask, request, session, url_for, redirect, render_template, jsonify, abort, g, flash, _app_ctx_stack
 from werkzeug import check_password_hash, generate_password_hash
 
 import os
@@ -67,7 +67,7 @@ def query_db(query, args=(), one=False):
 def login():
 	error = None
 	if request.method == 'POST':
-		user = query_db("select * from user where email = ?", [request.form['email']], one=True)
+		user = query_db("select * from user where username = ?", [request.form['username']], one=True)
 		if user is None:
 			error = 'Invalid username'
 		elif not check_password_hash(user['password'], request.form['password']):
@@ -75,13 +75,57 @@ def login():
 		else:
 			flash('You were logged in')
 			session['user_id'] = user['id']
+
+			if (int(user['is_seller'])):
+				session['is_seller'] = True
+			else:
+				session['is_seller'] = False
+
 			return redirect(url_for('get_products', category_id="3"))
 	return render_template('login.html', error=error)
+
+def check_user_exists(username):
+	user = query_db("select * from user where username = ?", [username], one=True)
+
+	if user:
+		return True
+	else:
+		return False
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+	error = None
+	if request.method == 'POST':
+		if not request.form['email'] or '@' not in request.form['email']:
+			error = 'You must enter an email'
+		elif not request.form['username']:
+			error = 'You must enter an username'
+		elif not request.form['password']:
+			error = 'You have to enter a password'
+		elif request.form['password'] != request.form['password2']:
+			error = 'Passwords should match'
+		elif check_user_exists(request.form['username']):
+			error = 'The username is already taken'
+		else:
+			is_seller = 0
+
+			if request.args.get('is_seller') == '1':
+				is_seller = 1
+
+			db = get_db()
+			db.execute("insert into user (email, password, username, is_seller) values (?, ?, ?, ?)", [request.form['username'], generate_password_hash(request.form['password']), request.form['username'], is_seller])
+			db.commit()
+			return redirect(url_for('login'))
+	return render_template('register.html', error=error)
 
 @app.before_request
 def before_request():
 	g.categories = None
 	g.categories = query_db('select * from category order by name')
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('abort.html')
 
 @app.route('/')
 def index():
@@ -89,13 +133,19 @@ def index():
 
 @app.route('/products')
 def get_products():
+	if 'user_id' not in session:
+		return render_template('abort.html')
+
 	selected_category = query_db("select name from category where id = ?", [request.args.get('category_id')], one=True)
 	products = query_db("select * from product where category_id = ?", [request.args.get('category_id')])
 	categories = query_db("select * from category order by name")
-	return render_template('products.html', categories=categories, products=products, category_id=request.args.get('category_id'), category_name=selected_category['name'])
+	return render_template('products.html', categories=categories, products=products, category_id=request.args.get('category_id'), category_name=selected_category['name'], is_seller=session['is_seller'])
 
 @app.route('/subscribe')
 def subscribe_product():
+	if 'user_id' not in session:
+		return render_template('abort.html')
+
 	quantity, product_id = request.args.get('quantity'), request.args.get('product_id')
 	prices, quantities = None, None
 
@@ -111,21 +161,32 @@ def subscribe_product():
 	unit = query_db("select name from units where id = ?", [product['units_id']], one=True)
 	return render_template('subscribe.html', selected_quantity=quantity, quantities=quantities, product=product, prices=prices, units_name=unit['name'], category_id=request.args.get('category_id'), category_name=request.args.get('category_name'), categories=g.categories)
 
-@app.route('/add_subscription', methods=['POST'])
+@app.route('/set_product_properties')
+def set_product_properties():
+	product_id, category_id = request.args.get('product_id'), request.args.get('category_id')
+	product = query_db("select * from product where id = ?", [product_id], one=True)
+	category_name = query_db("select name from category where id = ?", [category_id], one=True)
+	return render_template('set-product-properties.html', categories=g.categories, product=product, category_name=category_name['name'], category_id=category_id, units_name=UNITS[int(product['units_id'])], is_seller=session['is_seller'])
+
+# @app.route('/add_subscription', methods=['POST'])
+@app.route('/add_subscription')
 def add_subscription():
-	print ("COMING HERE", file=sys.stderr)
-	frequency, days, price_id = request.form['frequency'], request.form['days'], request.form['price_id']
-	print("frequency " + str(frequency), file=sys.stderr)
-	print("days " + str(days), file=sys.stderr)
-	print("price_id " + str(price_id), file=sys.stderr)
-	print("user_id " + str(session["user_id"]), file=sys.stderr)
+	if 'user_id' not in session:
+		return render_template('abort.html')
+
+	# frequency, days, price_id = request.form['frequency'], request.form['days'], request.form['price_id']
+	frequency, days, price_id = request.args.get('frequency'), request.args.get('days'), request.args.get('price_id')
 	db = get_db()
 	db.execute("insert into subscription (user_id, price_id, days, frequency) values (?, ?, ?, ?)", [session['user_id'], price_id, days, frequency])
 	db.commit()
-	return redirect(url_for('get_subscriptions'))
+	# return redirect(url_for('get_subscriptions'))
+	return jsonify(result="Inserted")
 
 @app.route('/get_subscriptions')
 def get_subscriptions():
+	if 'user_id' not in session:
+		return render_template('abort.html')
+
 	user_id = session['user_id']
 
 	subscriptions_raw_data = query_db("select * from subscription where user_id = ?", [user_id])
@@ -170,3 +231,19 @@ def get_subscriptions():
 		processed_subscriptions.append(processed_subscription)
 
 	return render_template('subscription_list.html', subscriptions=processed_subscriptions)
+
+@app.route('/_add_numbers')
+def add_numbers():
+	frequency = request.args.get('frequency')
+	print (frequency, file=sys.stderr)
+	days = request.args.get('days')
+	print (days, file=sys.stderr)
+	price_id = request.args.get('price_id')
+	print (price_id, file=sys.stderr)
+	return "Working"
+
+@app.route('/logout')
+def logout():
+	"""Logs the user out."""
+	session.pop('user_id', None)
+	return redirect(url_for('login'))
