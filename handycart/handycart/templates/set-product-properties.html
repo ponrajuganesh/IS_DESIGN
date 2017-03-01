@@ -1,0 +1,62 @@
+{% extends "seller-layout.html" %}
+{% block body %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col_3">
+      <div class="list-group">
+        {% for category in categories %}
+          <a id="{{category.id}}" href="{{url_for('get_products', category_id=category.id)}}" class="list-group-item list-group-item-action categories">{{category.name}}</a>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col_9">
+      <div class="container-fluid">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{url_for('get_products', category_id=category_id, is_seller=is_seller)}}">{{category_name}}</a></li>
+          <li class="breadcrumb-item active">{{product.name}}</li>
+        </ol>
+
+        <!-- Actual subscription options -->
+        <div class="row">
+
+          <!-- Large Image of the Product -->
+          <div class="col_4">
+            <div class="card">
+              <img class="card-img-top img-fluid" src="{{url_for('static', filename='img/%s' % product.img_src)}}" alt="Card image cap">
+            </div>
+          </div>
+          <div class="col_8">
+            <div class="row">
+              <dt class="col-sm-3">Qty Type</dt>
+              <dd class="col-sm-9">{{units_name}}</dd>
+
+              <dt class="col-sm-3">Description</dt>
+              <dd class="col-sm-9">{{product.description}}</dd>
+            </div>
+          </div>
+        </div> <!-- Actual subscription options ends -->
+
+        <div>
+          <div id="table" class="table-editable">
+            <table class="table">
+              <tr>
+                <th>Qty</th>
+                <th>Cost</th>
+                <th><button type="button" id="table-add" class="btn btn-primary">Add</button></th>
+              </tr>
+              <!-- This is our clonable table line -->
+              <tr class="hide table-line" style="display:none;">
+                <td contenteditable="true">Enter Qty</td>
+                <td contenteditable="true">Enter Price</td>
+                <td>
+                  <button type="button" class="table-remove btn btn-danger">Remove</button>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div><!-- Actual subscription options ends -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
