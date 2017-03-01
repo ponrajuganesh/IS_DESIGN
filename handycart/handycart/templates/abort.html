@@ -1,0 +1,16 @@
+{% extends "customer-layout.html" %}
+{% block body %}
+<div class="container">
+  <div class="row">
+      <div class="hero-unit center">
+        <h1 class="display-1"> Oops! </h1>
+        <br />
+        <p>Ah! Something wrong. We are busy fixing it. You could click the browser's back button to go back to the inception</p>
+        <p><b>Or just start from scratch:</b></p>
+        <a href="{{url_for('login')}}" class="btn btn-large btn-info"><i class="icon-home icon-white"></i> Take Me Home</a>
+      </div>
+      <br />
+    <br />
+  </div>
+</div>
+{% endblock %}
