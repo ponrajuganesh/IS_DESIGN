@@ -5,6 +5,8 @@ from werkzeug import check_password_hash, generate_password_hash
 
 import os
 import sys
+import ast
+import json
 
 #configurations
 DATABASE = 'data.db'
@@ -65,9 +67,14 @@ def query_db(query, args=(), one=False):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	error = None
+	error, is_seller = None, False
 	if request.method == 'POST':
 		user = query_db("select * from user where username = ?", [request.form['username']], one=True)
+
+		if user is None:
+			user = query_db("select * from seller where username = ?", [request.form['username']], one=True)
+			is_seller = True
+
 		if user is None:
 			error = 'Invalid username'
 		elif not check_password_hash(user['password'], request.form['password']):
@@ -75,17 +82,20 @@ def login():
 		else:
 			flash('You were logged in')
 			session['user_id'] = user['id']
-
-			if (int(user['is_seller'])):
-				session['is_seller'] = True
-			else:
-				session['is_seller'] = False
-
+			session['is_seller'] = is_seller
 			return redirect(url_for('get_products', category_id="3"))
+
 	return render_template('login.html', error=error)
 
-def check_user_exists(username):
-	user = query_db("select * from user where username = ?", [username], one=True)
+def check_user_exists(username, is_seller):
+	table_name = ""
+
+	if is_seller:
+		table_name = "seller"
+	else:
+		table_name = "user"
+
+	user = query_db("select * from " + table_name + " where username = ?", [username], one=True)
 
 	if user:
 		return True
@@ -94,7 +104,7 @@ def check_user_exists(username):
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-	error = None
+	error, is_seller = None, False
 	if request.method == 'POST':
 		if not request.form['email'] or '@' not in request.form['email']:
 			error = 'You must enter an email'
@@ -104,18 +114,26 @@ def register():
 			error = 'You have to enter a password'
 		elif request.form['password'] != request.form['password2']:
 			error = 'Passwords should match'
-		elif check_user_exists(request.form['username']):
-			error = 'The username is already taken'
-		else:
-			is_seller = 0
+		elif request.args.get('is_seller') == '1':
+			is_seller = True
+			if check_user_exists(request.form['username'], is_seller=is_seller):
+				error = 'Seller username is already taken'
+		elif request.args.get('is_seller') == '0':
+			is_seller = False
+			if check_user_exists(request.form['username'], is_seller=is_seller):
+				error = 'Customer Username is already taken'
 
-			if request.args.get('is_seller') == '1':
-				is_seller = 1
-
+		if not error:
 			db = get_db()
-			db.execute("insert into user (email, password, username, is_seller) values (?, ?, ?, ?)", [request.form['username'], generate_password_hash(request.form['password']), request.form['username'], is_seller])
+			if is_seller:
+				db.execute("insert into seller (email, password, username) values (?, ?, ?)", [request.form['username'], generate_password_hash(request.form['password']), request.form['username']])
+			else:
+				db.execute("insert into user (email, password, username) values (?, ?, ?)", [request.form['username'], generate_password_hash(request.form['password']), request.form['username']])
 			db.commit()
+
+			session['is_seller'] = is_seller
 			return redirect(url_for('login'))
+
 	return render_template('register.html', error=error)
 
 @app.before_request
@@ -232,18 +250,24 @@ def get_subscriptions():
 
 	return render_template('subscription_list.html', subscriptions=processed_subscriptions)
 
-@app.route('/_add_numbers')
-def add_numbers():
-	frequency = request.args.get('frequency')
-	print (frequency, file=sys.stderr)
-	days = request.args.get('days')
-	print (days, file=sys.stderr)
-	price_id = request.args.get('price_id')
-	print (price_id, file=sys.stderr)
-	return "Working"
+@app.route('/add_product_properties')
+def add_product_properties():
+	if 'user_id' not in session:
+		return render_template('abort.html')
+
+	properties = eval(request.args.get('properties'))
+	product_id = request.args.get('product_id')
+
+	for product_property in properties:
+		db = get_db()
+		db.execute("insert into price (product_id, seller_id, quantity, cost) values (?, ?, ?, ?)", [int(product_id), session['user_id'], product_property['qty'], product_property['cost']])
+		db.commit()
+
+	return jsonify(result="Working!")
 
 @app.route('/logout')
 def logout():
 	"""Logs the user out."""
 	session.pop('user_id', None)
+	session.pop('is_seller', None)
 	return redirect(url_for('login'))
