@@ -13,7 +13,7 @@
       <div class="container-fluid">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{{url_for('get_products', category_id=category_id, is_seller=is_seller)}}">{{category_name}}</a></li>
-          <li class="breadcrumb-item active">{{product.name}}</li>
+          <li class="breadcrumb-item active" id="product_id" val="{{product.id}}">{{product.name}}</li>
         </ol>
 
         <!-- Actual subscription options -->
@@ -55,6 +55,7 @@
             </table>
           </div>
         </div><!-- Actual subscription options ends -->
+        <button type="button" id="export" class="btn btn-primary">Submit</button>
       </div>
     </div>
   </div>
