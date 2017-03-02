@@ -1,14 +1,12 @@
 $(document).ready(function() {
   var $TABLE = $('#table');
-  var $BTN = $('#export-btn');
-  var $EXPORT = $('#export');
+  var $BTN = $('#export');
 
   // hide a row from the table
 
   $('#table-add').click(function () {
     var $clone = $TABLE.find('tr.hide').clone(true).removeClass('hide table-line');
     $clone.removeAttr("style");
-    console.log($clone);
     $TABLE.find('table').append($clone);
   });
 
@@ -26,10 +24,12 @@ $(document).ready(function() {
   jQuery.fn.pop = [].pop;
   jQuery.fn.shift = [].shift;
 
+  var data = [];
   $BTN.click(function () {
+    console.log("Button clicked");
     var $rows = $TABLE.find('tr:not(:hidden)');
     var headers = [];
-    var data = [];
+
 
     // Get the headers (add special header logic here)
     $($rows.shift()).find('th:not(:empty)').each(function () {
@@ -52,6 +52,15 @@ $(document).ready(function() {
     });
 
     // Output the result
-    $EXPORT.text(JSON.stringify(data));
+    console.log(JSON.stringify(data));
+    console.log("PRODUCT ID " + $("#product_id").val());
+
+    $.getJSON($SCRIPT_ROOT + '/add_product_properties', {
+      properties: JSON.stringify(data),
+      product_id: $("#product_id").val()
+    }, function(data) {
+      console.log(data);
+    });
+
   });
 })
