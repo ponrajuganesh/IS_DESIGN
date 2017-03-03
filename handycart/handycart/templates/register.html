@@ -13,10 +13,10 @@
 
 <body>
     <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="Login.html">Handy Cart</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button> <a class="navbar-brand" href="{{url_for('login')}}">Handy Cart</a>
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
             <ul class="navbar-nav">
-                <li class="nav-item "> <a class="nav-link" href="#">Become a Supplier </a> </li>
+                <li class="nav-item "> <a class="nav-link" href="{{url_for('register', is_seller='1')}}" active>Become a Supplier </a> </li>
             </ul>
         </div>
     </nav>
@@ -27,25 +27,31 @@
             <div class="app-title">
                 <h3>Sign Up</h3>
             </div>
-            {% if error %}<div class="error" style="color: #000000"><strong>Error:</strong> {{ error }}</div>{% endif %}
+
             <div class="login-form text-center">
-              <div class="control-group">
+              <div class="control-group has-danger">
                 <input type="text" class="login-field" name="username" value="{{ request.form.username }}" placeholder="username">
+                {% if errors.enter_username %}<div class="form-control-feedback"> {{ errors.enter_username }}</div>{% endif %}
+                {% if errors.seller_taken %}<div class="form-control-feedback"> {{ errors.seller_taken }}</div>{% endif %}
+                {% if errors.customer_taken %}<div class="form-control-feedback"> {{ errors.customer_taken }}</div>{% endif %}
                 <label class="login-field-icon fui-user" for="login-name"></label>
               </div>
 
-                <div class="control-group">
+                <div class="control-group has-danger">
                   <input type="text" class="login-field" name="email" value="{{ request.form.email }}" placeholder="email">
+                  {% if errors.email %}<div class="form-control-feedback"> {{ errors.email }}</div>{% endif %}
                   <label class="login-field-icon fui-user" for="login-name"></label>
                 </div>
 
-                <div class="control-group">
+                <div class="control-group has-danger">
                   <input type="password" name="password" class="login-field" value="" placeholder="password" >
+                  {% if errors.enter_password %}<div class="form-control-feedback"> {{ errors.enter_password }}</div>{% endif %}
                   <label class="login-field-icon fui-lock" for="login-pass"></label>
                 </div>
 
-                <div class="control-group">
+                <div class="control-group has-danger">
                   <input type="password" name="password2" class="login-field" value="" placeholder="re-enter password">
+                  {% if errors.password_mismatch %}<div class="form-control-feedback"> {{ errors.password_mismatch }}</div>{% endif %}
                   <label class="login-field-icon fui-lock" for="login-pass"></label>
                 </div>
 
