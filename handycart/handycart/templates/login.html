@@ -23,20 +23,20 @@
     <br/>
     <div class="login">
       <form action="" method="post">
-        <!-- <input type="hidden" value="{{is_seller}}" name="is_seller" /> -->
         <div class="login-screen">
             <div class="app-title">
                 <h3>Sign In</h3>
             </div>
-            {% if error %}<div class="error" style="color: #000000"><strong>Error:</strong> {{ error }}</div>{% endif %}
             <div class="login-form text-center">
-                <div class="control-group">
+                <div class="control-group has-danger">
                   <input type="text" class="login-field" name="username" value="{{ request.form.username }}" placeholder="username" id="login-name">
                   <label class="login-field-icon fui-user" for="login-name"></label>
+                  {% if errors.username %}<div class="form-control-feedback"> {{ errors.username }}</div>{% endif %}
                 </div>
 
-                <div class="control-group">
+                <div class="control-group has-danger">
                   <input type="password" name="password" class="login-field" value="" placeholder="password" id="login-pass">
+                  {% if errors.password %}<div class="form-control-feedback"> {{ errors.password }}</div>{% endif %}
                   <label class="login-field-icon fui-lock" for="login-pass"></label>
                 </div>
                 <button type="submit" class="btn btn-primary btn-login-form">Login</button>
