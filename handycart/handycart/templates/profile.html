@@ -1,0 +1,107 @@
+{% if is_seller %}
+  {% extends "seller-layout.html" %}
+{% else %}
+  {% extends "customer-layout.html" %}
+{% endif %}
+
+{% block body %}
+
+<div>
+  <h1 align="center"> Hello {{user.username}} <span class="badge badge-default">GOLD MEMBER</span> </h1>
+</div>
+<br/>
+<div class="container-fluid" style="width:50%">
+  <div class="form-group row">
+    <label for="text-input" class="col_3 col_form-label">Username</label>
+    <div class="col_9">
+      <input class="form-control" type="text" value="{{user.username}}" id="username" disabled>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="example-email-input" class="col_3 col_form-label">Email</label>
+    <div class="col_9">
+      <input class="form-control" type="email" value="{{user.email}}" id="email">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="tel-input" class="col_3 col_form-label">Phone</label>
+    <div class="col_9">
+      <input class="form-control" type="tel" value="{{user.phone}}" id="phone">
+    </div>
+  </div>
+
+  {% if is_seller %}
+    <div class="form-group row">
+      <label for="text-input" class="col_3 col_form-label">Firstname</label>
+      <div class="col_9">
+        <input class="form-control" type="text" value="{{user.first_name}}" id="firstname">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="text-input" class="col_3 col_form-label">Lastname</label>
+      <div class="col_9">
+        <input class="form-control" type="text" value="{{user.last_name}}" id="lastname">
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<div class="container-fluid" style="width:50%">
+  <p> Address </p>
+  <div class="form-group row">
+    <div class="col_9">
+      <div class="form-group">
+        {% if address %}
+          <input class="form-control" type="text" placeholder="Street Name" value="{{address.street}}" id="street">
+        {% else %}
+          <input class="form-control" type="text" placeholder="Street Name" value="" id="street">
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col_3">
+      <div class="form-group">
+        {% if address %}
+          <input class="form-control" type="number" placeholder="Apt #" value="{{address.apt_number}}" id="apt_number">
+        {% else %}
+          <input class="form-control" type="number" placeholder="Apt #" value="" id="apt_number">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col_6">
+      <div class="form-group">
+        {% if address %}
+          <input class="form-control" type="text" placeholder="city" value="{{address.city}}" id="city">
+        {% else %}
+          <input class="form-control" type="text" placeholder="city" value="" id="city">
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col_3">
+      <div class="form-group">
+        {% if address %}
+          <input class="form-control" type="number" placeholder="Zip" value="{{address.zip}}" id="street">
+        {% else %}
+          <input class="form-control" type="number" placeholder="Zip" value="" id="zip">
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col_3">
+      <div class="form-group">
+        {% if address %}
+          <input class="form-control" type="text" placeholder="State" value="{{address.state}}" id="state">
+        {% else %}
+          <input class="form-control" type="text" placeholder="State" value="" id="state">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
