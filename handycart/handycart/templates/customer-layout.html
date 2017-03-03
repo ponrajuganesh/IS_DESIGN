@@ -14,12 +14,24 @@
 
   <script type="text/javascript">
     var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    $(function () {
+      $('[data-toggle="popover"]').popover()
+    });
   </script>
+
+
+  <script src="{{ url_for('static', filename='profile.js') }}"></script>
+
+  {% if category_id %}
+    <script type="text/javascript">
+      $( document ).ready(function() {
+        $("#{{category_id}}").addClass("active");
+      });
+    </script>
+  {% endif %}
 
   <script type="text/javascript">
     $( document ).ready(function() {
-      $("#{{category_id}}").addClass("active");
-
       $('.dropdown-menu a').click(function(){
         $('#product_frequency').text($(this).text());
         $('#frequency').val($(this).attr("id"));
