@@ -296,25 +296,31 @@ def get_profile():
 
 @app.route('/update_profile')
 def update_profile():
+	print ("REQUEST " + request.args.get("data"), file=sys.stderr)
 	user_address_data = eval(request.args.get('data'))
 	db = get_db()
 
 	if (session['is_seller']):
-		db.execute("update seller set email = ? and phone = ? where id = ?", [user_address_data['email'], session['user_id']])
+		print ("FIRST ", file=sys.stderr)
+		print ("USER_ID " + str(type(session['user_id'])), file=sys.stderr)
+		print ("USER_ID " + str(session['user_id']), file=sys.stderr)
+		db.execute("update seller set email = ?, phone = ? where id = ?", [user_address_data['email'], user_address_data['phone'], session['user_id']])
 	else:
-		db.execute("update user set email = ? and first_name = ? and last_name = ? and phone = ? where id = ?", [user_address_data['email'], user_address_data['first_name'], user_address_data['last_name'], session['user_id']])
+		db.execute("update user set email = ?, first_name = ?, last_name = ?, phone = ? where id = ?", [user_address_data['email'], user_address_data['first_name'], user_address_data['last_name'], user_address_data['phone'], session['user_id']])
 
 	db.commit()
 
 	has_address = query_db("select * from address where user_id = ?", [session['user_id']], one=True)
 
 	if has_address:
-		db.execute("update address set apt_number = ? and street = ? and city = ? and state = ? and zip = ? where user_id = ?", [user_address_data['apt_number'], user_address_data['street'], user_address_data['city'], user_address_data['state'], user_address_data['zip'], has_address['id'])
+		db.execute("update address set apt_number = ?, street = ?, city = ?, state = ?, zip = ? where id = ?", [user_address_data['apt_number'], user_address_data['street'], user_address_data['city'], user_address_data['state'], user_address_data['zip'], has_address['id']])
 	else:
 		db.execute("insert into address (apt_number, street, city, state, zip, user_id) values (?, ?, ?, ?, ?, ?)", [user_address_data['apt_number'], user_address_data['street'], user_address_data['city'], user_address_data['state'], user_address_data['zip'], session['user_id']])
 
 	db.commit()
-	
+
+	return jsonify(result="Inserted")
+
 
 @app.route('/logout')
 def logout():
