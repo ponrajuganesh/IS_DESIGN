@@ -7,7 +7,18 @@
 {% block body %}
 
 <div>
-  <h1 align="center"> Hello {{user.username}} <span class="badge badge-default">GOLD MEMBER</span> </h1>
+  <h1 align="center"> Hello {{user.username}} <span class="badge badge-default" data-toggle="popover" title="Discount" data-content="You are a GOLD Member. Avail 10% discount by subcribing to another 4 items">GOLD</span> </h1>
+</div>
+<br/>
+<div id="profile_mascot_block" class="row" style="display:none;">
+  <div class="col_4"></div>
+  <div class="col_6">
+    <wordwrap>
+      <div class="alert alert-success" role="alert" id="profile_mascot_message">
+      </div>
+    </wordwrap>
+  </div>
+  <img class="text-right col_1" src="{{url_for('static', filename='img/potato.jpg')}}" style="height: 100px; width: 100px; float: right; border-radius: 25px;">
 </div>
 <br/>
 <div class="container-fluid" style="width:50%">
@@ -30,18 +41,18 @@
     </div>
   </div>
 
-  {% if is_seller %}
+  {% if not is_seller %}
     <div class="form-group row">
       <label for="text-input" class="col_3 col_form-label">Firstname</label>
       <div class="col_9">
-        <input class="form-control" type="text" value="{{user.first_name}}" id="firstname">
+        <input class="form-control" type="text" value="{{user.first_name}}" id="first_name">
       </div>
     </div>
 
     <div class="form-group row">
       <label for="text-input" class="col_3 col_form-label">Lastname</label>
       <div class="col_9">
-        <input class="form-control" type="text" value="{{user.last_name}}" id="lastname">
+        <input class="form-control" type="text" value="{{user.last_name}}" id="last_name">
       </div>
     </div>
   {% endif %}
@@ -70,38 +81,43 @@
       </div>
     </div>
   </div>
+    <div class="form-group row">
+      <div class="col_6">
+        <div class="form-group">
+          {% if address %}
+            <input class="form-control" type="text" placeholder="city" value="{{address.city}}" id="city">
+          {% else %}
+            <input class="form-control" type="text" placeholder="city" value="" id="city">
+          {% endif %}
+        </div>
+      </div>
 
-  <div class="form-group row">
-    <div class="col_6">
-      <div class="form-group">
-        {% if address %}
-          <input class="form-control" type="text" placeholder="city" value="{{address.city}}" id="city">
-        {% else %}
-          <input class="form-control" type="text" placeholder="city" value="" id="city">
-        {% endif %}
+      <div class="col_3">
+        <div class="form-group">
+          {% if address %}
+            <input class="form-control" type="number" placeholder="Zip" value="{{address.zip}}" id="zip">
+          {% else %}
+            <input class="form-control" type="number" placeholder="Zip" value="" id="zip">
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="col_3">
+        <div class="form-group">
+          {% if address %}
+            <input class="form-control" type="text" placeholder="State" value="{{address.state}}" id="state">
+          {% else %}
+            <input class="form-control" type="text" placeholder="State" value="" id="state">
+          {% endif %}
+        </div>
       </div>
     </div>
 
-    <div class="col_3">
-      <div class="form-group">
-        {% if address %}
-          <input class="form-control" type="number" placeholder="Zip" value="{{address.zip}}" id="street">
-        {% else %}
-          <input class="form-control" type="number" placeholder="Zip" value="" id="zip">
-        {% endif %}
-      </div>
-    </div>
-
-    <div class="col_3">
-      <div class="form-group">
-        {% if address %}
-          <input class="form-control" type="text" placeholder="State" value="{{address.state}}" id="state">
-        {% else %}
-          <input class="form-control" type="text" placeholder="State" value="" id="state">
-        {% endif %}
-      </div>
-    </div>
+  <div class="text-right">
+    <button id="update_profile" type="submit" class="btn btn-primary">Update</button>
   </div>
 </div>
+
+
 
 {% endblock %}
