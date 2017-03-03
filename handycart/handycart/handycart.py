@@ -67,7 +67,11 @@ def query_db(query, args=(), one=False):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	error, is_seller = None, False
+	errors = {}
+	errors['username'] = None
+	errors['passsword'] = None
+	is_seller = False
+
 	if request.method == 'POST':
 		user = query_db("select * from user where username = ?", [request.form['username']], one=True)
 
@@ -76,16 +80,15 @@ def login():
 			is_seller = True
 
 		if user is None:
-			error = 'Invalid username'
+			errors['username'] = 'Invalid username'
 		elif not check_password_hash(user['password'], request.form['password']):
-			error = 'Invalid password'
+			errors['password'] = 'Invalid password'
 		else:
-			flash('You were logged in')
 			session['user_id'] = user['id']
 			session['is_seller'] = is_seller
 			return redirect(url_for('get_products', category_id="3"))
 
-	return render_template('login.html', error=error)
+	return render_template('login.html', errors=errors)
 
 def check_user_exists(username, is_seller):
 	table_name = ""
@@ -104,24 +107,38 @@ def check_user_exists(username, is_seller):
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-	error, is_seller = None, False
+	errors, error, is_seller = {}, False, False
+
+	errors['enter_username'] = None
+	errors['enter_password'] = None
+	errors['password_mismatch'] = None
+	errors['seller_taken'] = None
+	errors['customer_taken'] = None
+	errors['email'] = None
+
 	if request.method == 'POST':
 		if not request.form['email'] or '@' not in request.form['email']:
-			error = 'You must enter an email'
+			errors['email'] = 'You must enter an email'
+			error = True
 		elif not request.form['username']:
-			error = 'You must enter an username'
+			errors['enter_username'] = 'You must enter an username'
+			error = True
 		elif not request.form['password']:
-			error = 'You have to enter a password'
+			errors['enter_password'] = 'You have to enter a password'
+			error = True
 		elif request.form['password'] != request.form['password2']:
-			error = 'Passwords should match'
+			errors['password_mismatch'] = 'Passwords should match'
+			error = True
 		elif request.args.get('is_seller') == '1':
 			is_seller = True
 			if check_user_exists(request.form['username'], is_seller=is_seller):
-				error = 'Seller username is already taken'
+				errors['seller_taken'] = 'Seller username is already taken'
+				error = True
 		elif request.args.get('is_seller') == '0':
 			is_seller = False
 			if check_user_exists(request.form['username'], is_seller=is_seller):
-				error = 'Customer Username is already taken'
+				errors['customer_taken'] = 'Customer Username is already taken'
+				error = True
 
 		if not error:
 			db = get_db()
@@ -134,7 +151,7 @@ def register():
 			session['is_seller'] = is_seller
 			return redirect(url_for('login'))
 
-	return render_template('register.html', error=error)
+	return render_template('register.html', errors=errors)
 
 @app.before_request
 def before_request():
@@ -264,6 +281,40 @@ def add_product_properties():
 		db.commit()
 
 	return jsonify(result="Working!")
+
+@app.route('/profile')
+def get_profile():
+	user = None
+
+	if session['is_seller']:
+		user = query_db("select * from seller where id = ?", [session['user_id']], one=True)
+	else:
+		user = query_db("select * from user where id = ?", [session['user_id']], one=True)
+
+	address = query_db("select * from address where user_id = ?", [session['user_id']], one=True)
+	return render_template('profile.html', is_seller=session['is_seller'], user=user, address=address)
+
+@app.route('/update_profile')
+def update_profile():
+	user_address_data = eval(request.args.get('data'))
+	db = get_db()
+
+	if (session['is_seller']):
+		db.execute("update seller set email = ? and phone = ? where id = ?", [user_address_data['email'], session['user_id']])
+	else:
+		db.execute("update user set email = ? and first_name = ? and last_name = ? and phone = ? where id = ?", [user_address_data['email'], user_address_data['first_name'], user_address_data['last_name'], session['user_id']])
+
+	db.commit()
+
+	has_address = query_db("select * from address where user_id = ?", [session['user_id']], one=True)
+
+	if has_address:
+		db.execute("update address set apt_number = ? and street = ? and city = ? and state = ? and zip = ? where user_id = ?", [user_address_data['apt_number'], user_address_data['street'], user_address_data['city'], user_address_data['state'], user_address_data['zip'], has_address['id'])
+	else:
+		db.execute("insert into address (apt_number, street, city, state, zip, user_id) values (?, ?, ?, ?, ?, ?)", [user_address_data['apt_number'], user_address_data['street'], user_address_data['city'], user_address_data['state'], user_address_data['zip'], session['user_id']])
+
+	db.commit()
+	
 
 @app.route('/logout')
 def logout():
