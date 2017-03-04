@@ -30,6 +30,7 @@ DAYS = {
 	6: 'Su'
 }
 
+
 FREQUENCY = {
 	0: 'Weekly',
 	1: 'Bi-Weekly',
@@ -338,6 +339,66 @@ def update_profile():
 	db.commit()
 
 	return jsonify(result="Inserted")
+
+@app.route('/get_seller_products')
+def get_seller_products():
+	seller = query_db("select * from seller where id = ?", [session['user_id']], one=True)
+	prices = query_db("select * from price where seller_id = ?", [session['user_id']])
+	product_info = {}
+	customized_product_info = []
+
+	for price in prices:
+		price_info = {}
+		price_info['quantity'] = None
+		price_info['cost'] = None
+		if price['product_id'] in product_info:
+			price_info['quantity'] = price['quantity']
+			price_info['cost'] = price['cost']
+			product_info[price['product_id']]['prices'].append(price_info)
+		else:
+			product_info[price['product_id']] = None
+			product_info[price['product_id']] = {}
+
+			product_info[price['product_id']]['name'] = None
+			product_info[price['product_id']]['units_name'] = None
+			product_info[price['product_id']]['img_src'] = None
+
+			product = query_db("select * from product where id = ?", [price['product_id']], one=True)
+			product_info[price['product_id']]['name'] = product['name']
+			product_info[price['product_id']]['units_name'] = UNITS[product['units_id']]
+			product_info[price['product_id']]['img_src'] = product['img_src']
+
+			product_info[price['product_id']]['prices'] = None
+			product_info[price['product_id']]['prices'] = []
+
+			price_info['quantity'] = price['quantity']
+			price_info['cost'] = price['cost']
+
+			product_info[price['product_id']]['prices'].append(price_info)
+
+
+
+
+	for product_id in product_info:
+		customized_product_info.append(product_info[product_id])
+
+	return render_template('seller_products.html', products=customized_product_info, seller_name=seller['name'])
+
+@app.route('/get_seller_stats')
+def get_seller_stats():
+	subscriptions = query_db("select product.name, count(*) as counts from price, subscription, product where price.product_id = product.id and  price.id = subscription.price_id and price.seller_id = ? group by price.product_id", [session['user_id']])
+
+	products = []
+	counts = []
+
+	for subscription in subscriptions:
+		products.append(subscription['name'])
+		counts.append(subscription['counts'])
+
+	products_string = ','.join(products)
+	counts_string = ','.join(str(count) for count in counts)
+
+	return render_template('seller_stats.html', products_string=products_string, counts_string=counts_string)
 
 
 @app.route('/logout')
