@@ -32,6 +32,7 @@
                   <input type="text" class="login-field" name="username" value="{{ request.form.username }}" placeholder="username" id="login-name">
                   <label class="login-field-icon fui-user" for="login-name"></label>
                   {% if errors.username %}<div class="form-control-feedback"> {{ errors.username }}</div>{% endif %}
+                  {% if errors.admin %}<div class="form-control-feedback"> {{ errors.admin }}</div>{% endif %}
                 </div>
 
                 <div class="control-group has-danger">
