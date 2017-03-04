@@ -35,7 +35,7 @@
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 420px) {
     /* For mobile phones: */
     [class*="col_"] {
         width: 100%;
@@ -55,8 +55,21 @@ body {
     background-position: top left, center center, center center !important;
 }
 
+#admin_body {
+  background: grey !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  background-attachment: fixed, fixed, fixed !important;
+  background-image: url(../images/overlay2.png), url(../images/overlay4.svg), linear-gradient(45deg, black, grey 50%, white 95%) !important;
+  background-size: auto, cover, cover !important;
+  background-position: top left, center center, center center !important;
+}
+
 .center {text-align: center; margin-left: auto; margin-right: auto; margin-bottom: auto; margin-top: auto;}
 
 .popover-title, .popover-content {
   color: black;
+}
+
+#seller_navbar {
+  color: white !important;
 }
