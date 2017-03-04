@@ -83,10 +83,16 @@ def login():
 			errors['username'] = 'Invalid username'
 		elif not check_password_hash(user['password'], request.form['password']):
 			errors['password'] = 'Invalid password'
+		elif user['is_active'] == 0:
+			errors['admin'] = 'Blocked by Admin'
 		else:
 			session['user_id'] = user['id']
 			session['is_seller'] = is_seller
-			return redirect(url_for('get_products', category_id="3"))
+
+			if request.form['username'] == 'admin':
+				return redirect(url_for('get_permissions'))
+			else:
+				return redirect(url_for('get_products', category_id="3"))
 
 	return render_template('login.html', errors=errors)
 
@@ -176,6 +182,23 @@ def get_products():
 	categories = query_db("select * from category order by name")
 	return render_template('products.html', categories=categories, products=products, category_id=request.args.get('category_id'), category_name=selected_category['name'], is_seller=session['is_seller'])
 
+@app.route('/get_permissions')
+def get_permissions():
+	customers = query_db("select * from user")
+	sellers = query_db("select * from seller")
+
+	return render_template("permissions.html", customers=customers, sellers=sellers)
+
+@app.route('/set_permissions')
+def set_permissions():
+	user_id, user_type, is_active = request.args.get('user_id'), request.args.get('user_type'), request.args.get('is_active')
+
+	db = get_db()
+	db.execute("update "+user_type+ " set is_active = ? where id = ?", [int(is_active), int(user_id)])
+	db.commit()
+
+	return jsonify(insert='Done')
+
 @app.route('/subscribe')
 def subscribe_product():
 	if 'user_id' not in session:
@@ -203,7 +226,6 @@ def set_product_properties():
 	category_name = query_db("select name from category where id = ?", [category_id], one=True)
 	return render_template('set-product-properties.html', categories=g.categories, product=product, category_name=category_name['name'], category_id=category_id, units_name=UNITS[int(product['units_id'])], is_seller=session['is_seller'])
 
-# @app.route('/add_subscription', methods=['POST'])
 @app.route('/add_subscription')
 def add_subscription():
 	if 'user_id' not in session:
@@ -214,7 +236,7 @@ def add_subscription():
 	db = get_db()
 	db.execute("insert into subscription (user_id, price_id, days, frequency) values (?, ?, ?, ?)", [session['user_id'], price_id, days, frequency])
 	db.commit()
-	# return redirect(url_for('get_subscriptions'))
+
 	return jsonify(result="Inserted")
 
 @app.route('/get_subscriptions')
@@ -296,14 +318,10 @@ def get_profile():
 
 @app.route('/update_profile')
 def update_profile():
-	print ("REQUEST " + request.args.get("data"), file=sys.stderr)
 	user_address_data = eval(request.args.get('data'))
 	db = get_db()
 
 	if (session['is_seller']):
-		print ("FIRST ", file=sys.stderr)
-		print ("USER_ID " + str(type(session['user_id'])), file=sys.stderr)
-		print ("USER_ID " + str(session['user_id']), file=sys.stderr)
 		db.execute("update seller set email = ?, phone = ? where id = ?", [user_address_data['email'], user_address_data['phone'], session['user_id']])
 	else:
 		db.execute("update user set email = ?, first_name = ?, last_name = ?, phone = ? where id = ?", [user_address_data['email'], user_address_data['first_name'], user_address_data['last_name'], user_address_data['phone'], session['user_id']])
