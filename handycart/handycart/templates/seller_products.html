@@ -1,0 +1,48 @@
+{% extends "seller-layout.html" %}
+{% block body %}
+<div>
+  <h1 align="center"> {{seller_name}} </h1>
+</div>
+<div class="container-fluid" style="color:black;">
+  {% for product in products %}
+    <h3> {{product.name}} </h3>
+    <hr>
+    <div class="row">
+      <div class="col_3">
+        <img src="{{url_for('static', filename='img/%s' % product.img_src)}}" alt="Product Image" class="img-thumbnail">
+      </div>
+
+      <div class="col_9">
+        <div class="row">
+          <dt class="col-sm-3">Qty Type</dt>
+          <dd class="col-sm-9">{{product.units_name}}</dd>
+        </div>
+        <br/>
+        <div class="row">
+          <dt class="col_3">
+            Properties
+          </dt>
+          <dd class="col_9">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Qty</th>
+                  <th>Cost</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for price in product.prices %}
+                <tr>
+                  <td>{{price.quantity}}</td>
+                  <td>${{price.cost}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </dd>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

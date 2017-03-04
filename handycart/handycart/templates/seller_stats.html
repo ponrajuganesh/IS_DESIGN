@@ -1,0 +1,18 @@
+{% extends "seller-layout.html" %}
+{% block body %}
+<input type="hidden" id="products_string" value="{{products_string}}">
+<input type="hidden" id="sold_count_string" value="{{counts_string}}">
+
+<script src="{{ url_for('static', filename='d3.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='c3.css') }}">
+<script src="{{ url_for('static', filename='c3.js') }}"></script>
+<script src="{{ url_for('static', filename='stats.js') }}"></script>
+
+<div>
+  <h1 align="center"> Statistics </h1>
+</div>
+<div class="container-fluid col_12">
+  <div id="chart">
+  </div>
+</div>
+{% endblock %}
