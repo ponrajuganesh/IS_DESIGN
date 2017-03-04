@@ -59,7 +59,8 @@ $(document).ready(function() {
       properties: JSON.stringify(data),
       product_id: $("#product_id").val()
     }, function(data) {
-      console.log(data);
+      $('#product_properties_mascot_block').removeAttr("style");
+      $('#product_properties_mascot_message').text("Successfully updated product info");
     });
 
   });
