@@ -1,0 +1,28 @@
+{% extends "admin-layout.html" %}
+{% block body %}
+<div class="container-fluid" align="center" >
+  <div style="width:50%; color:black;">
+    <h1> Users </h1>
+    <input class="form-control form-control-lg" type="text" id="username" value="" placeholder="Search usernames" id="example-text-input">
+    <br/>
+    <ul class="list-group">
+      <li class="list-group-item row active"> Customers </li>
+      {% for customer in customers %}
+        {% if customer.is_active %}
+          <li id="{{customer.id}}" value="user" class="list-group-item row"><div class="col_8 text-center username"> {{customer.username}} </div> <div class="col_4 text-center"> <button  type="button" value="{{customer.id}}" class="btn btn-danger">De-activate</button> </div> </li>
+        {% else %}
+          <li id="{{customer.id}}" value="user" class="list-group-item row"><div class="col_8 text-center username"> {{customer.username}} </div> <div class="col_4 text-center"> <button  type="button" value="{{customer.id}}" class="btn btn-success">Activate</button> </div> </li>
+        {% endif %}
+      {% endfor %}
+      <li class="list-group-item row active"> Sellers </li>
+      {% for seller in sellers %}
+        {% if seller.is_active %}
+          <li id="{{seller.id}}" value="seller" class="list-group-item row"><div class="col_8 text-center username"> {{seller.username}} </div> <div class="col_4 text-center"> <button  type="button" value="{{seller.id}}" class="btn btn-danger">De-activate</button> </div> </li>
+        {% else %}
+          <li id="{{seller.id}}" value="seller" class="list-group-item row"><div class="col_8 text-center username"> {{seller.username}} </div> <div class="col_4 text-center"> <button  type="button" value="{{seller.id}}" class="btn btn-success">Activate</button> </div> </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
