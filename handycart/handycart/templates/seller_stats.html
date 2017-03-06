@@ -8,6 +8,14 @@
 <script src="{{ url_for('static', filename='c3.js') }}"></script>
 <script src="{{ url_for('static', filename='stats.js') }}"></script>
 
+<script type="text/javascript">
+  $( document ).ready(function() {
+    $("#footer").removeAttr("style");
+
+    $("#footer").attr("style", "bottom:0; margin:0; position:absolute; width:100%;")
+  });
+</script>
+
 <div>
   <h1 align="center"> Statistics </h1>
 </div>
