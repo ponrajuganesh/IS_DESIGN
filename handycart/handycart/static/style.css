@@ -35,7 +35,7 @@
 }
 
 
-@media (max-width: 420px) {
+@media (max-width: 768px) {
     /* For mobile phones: */
     [class*="col_"] {
         width: 100%;
@@ -55,11 +55,20 @@ body {
     background-position: top left, center center, center center !important;
 }
 
+#seller_body {
+  background: grey !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  background-attachment: fixed, fixed, fixed !important;
+  background-image: url('img/overlay2.png'), url('img/overlay4.svg'), linear-gradient(45deg, #4A84A7, grey 60%, #6B3838 85%) !important;
+  background-size: auto, cover, cover !important;
+  background-position: top left, center center, center center !important;
+}
+
 #admin_body {
   background: grey !important;
   color: rgba(255, 255, 255, 0.75) !important;
   background-attachment: fixed, fixed, fixed !important;
-  background-image: url(../images/overlay2.png), url(../images/overlay4.svg), linear-gradient(45deg, black, grey 50%, white 95%) !important;
+  background-image: url('img/overlay2.png'), url('img/overlay4.svg'), linear-gradient(45deg, #4A84A7, grey 70%, white 95%) !important;
   background-size: auto, cover, cover !important;
   background-position: top left, center center, center center !important;
 }
@@ -70,6 +79,10 @@ body {
   color: black;
 }
 
-#seller_navbar {
+.navbar-brand {
   color: white !important;
 }
+
+/*.list-group-item.active {
+  background-color: #4A84A7 !important;
+}*/
