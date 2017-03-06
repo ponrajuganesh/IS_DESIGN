@@ -5,9 +5,9 @@
 {% endif %}
 
 {% block body %}
-
+<div class="container-fluid" style="width:50%;">
 <div>
-  <h1 align="center"> Hello {{user.username}} <span class="badge badge-default" data-toggle="popover" title="Discount" data-content="You are a GOLD Member. Avail 10% discount by subcribing to another 4 items">GOLD</span> </h1>
+  <h1 align="center"> Hello {{user.username}} <span class="badge badge-default" data-placement="bottom" data-toggle="popover" title="Discount" data-content="You are a GOLD Member. Avail 10% discount by subcribing to another 4 items">GOLD</span> </h1>
 </div>
 <br/>
 <div id="profile_mascot_block" class="row" style="display:none;">
@@ -21,7 +21,7 @@
   <img class="text-right col_1" src="{{url_for('static', filename='img/potato.jpg')}}" style="height: 100px; width: 100px; float: right; border-radius: 25px;">
 </div>
 <br/>
-<div class="container-fluid" style="width:50%">
+
   <div class="form-group row">
     <label for="text-input" class="col_3 col_form-label">Username</label>
     <div class="col_9">
