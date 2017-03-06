@@ -9,6 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.1/js/tether.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='seller.css') }}">
 
   {% if category_id %}
     <script type="text/javascript">
@@ -31,8 +32,8 @@
 
 </head>
 
-<body id="admin_body">
-  <nav class="navbar navbar-light" >
+<body id="seller_body">
+  <nav class="navbar navbar-light" style="background-color: #7B4E4E;" >
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -42,6 +43,9 @@
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('get_seller_products')}}">Products</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('get_seller_stats')}}">Stats</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('get_profile')}}">Profile</a>
@@ -54,6 +58,23 @@
   </nav>
 <br/>
 {% block body %}{% endblock %}
-
+<br/>
 </body>
+<br/>
+<footer class="footer">
+  <nav id="footer" class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
+      <a class="navbar-brand" href="{{url_for('get_products', category_id='3')}}">Copyright &copy; Handy Cart</a>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item active" style="float:right;">
+            <a class="nav-link" href="{{url_for('get_profile')}}">About Us</a>
+          </li>
+          <li class="nav-item" style="float:right;">
+            <a class="nav-link" href="{{url_for('logout')}}">Contact Us</a>
+          </li>
+        </ul>
+      </div>
+  </nav>
+</footer>
 </html>
