@@ -92,14 +92,50 @@
   </script>
 </head>
 
+<script type="text/javascript">
+  $(document).ready(function() {
+    var $PRODUCTSEARCHBAR = $("#product_search");
+
+    $PRODUCTSEARCHBAR.keyup(function () {
+      console.log('Working!');
+      var search_query = $("#product_search").val().trim();
+      if (search_query) {
+        $("#search-results").find('a').each(function() {
+          $("#search-results").removeAttr("style");
+          if ($(this).text().trim().indexOf(search_query) >= 0) {
+            $(this).removeAttr("style");
+          }
+        });
+      }
+      else {
+        $("#search-results").attr("style", "display:none");
+        $("#search-results").find('a').each(function() {
+            $(this).attr("style", "display:none");
+        });
+      }
+    });
+  });
+</script>
 <body>
-  <nav class="navbar navbar-light" style="background-color: #4A84A7;" id="customer_navbar">
+  <nav class="navbar navbar-toggleable-md navbar-light" style="background-color: #4A84A7;" id="customer_navbar">
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="{{url_for('get_products', category_id='3')}}">Handy Cart</a>
+      <a class="navbar-brand" href="{{url_for('get_products', category_id='3')}}">
+        <img src="{{url_for('static', filename='img/mascot.gif')}}" width="30" height="30"> Handy Cart
+      </a>
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <form>
+              <input class="form-control mr-sm-2 dropdown-toggle" type="text" value="" placeholder="Search" id="product_search">
+              <div class="dropdown show">
+                <div class="dropdown-menu" id="search-results" style="display:none;">
+                  {% for all_product in all_products %}
+                    <a class="dropdown-item" href="{{url_for('subscribe_product', product_id=all_product.product_id, category_id=all_product.category_id, category_name=all_product.category_name)}}" style="display:none;">{{all_product.product_name}}</a>
+                  {% endfor %}
+                </div>
+              </div>
+        </form>
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('get_subscriptions')}}">Subscription</a>
@@ -117,10 +153,18 @@
       </div>
   </nav>
 <br/>
+
+
+<div class="dropdown-menu">
+  <h6 class="dropdown-header">Dropdown header</h6>
+  <a class="dropdown-item" href="#">Action</a>
+  <a class="dropdown-item" href="#">Another action</a>
+</div>
 {% block body %}{% endblock %}
-<br/>
+
 <footer class="footer">
-<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse" style="background-color: #2E1C81">
+<br/>
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse" style="position:sticky; bottom:0;background-color: #4A84A7 !important;width:100%;">
     <a class="navbar-brand" href="{{url_for('get_products', category_id='3')}}">Copyright &copy; Handy Cart</a>
 
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
