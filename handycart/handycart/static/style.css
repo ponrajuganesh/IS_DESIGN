@@ -82,6 +82,38 @@ body {
   color: white !important;
 }
 
-/*.list-group-item.active {
-  background-color: #4A84A7 !important;
-}*/
+/* carousel */
+.carousel-indicators li{
+    background-color:dimgrey;
+}
+.carousel-indicators .active{
+    background-color:black;
+}
+.testimonial-slider{
+    background: url('img/testimonial.jpg');no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.testimonial-slider > *{
+    color:black !important;
+}
+
+.img-circle{
+    border-radius: 50%;
+}
+blockquote {
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}

@@ -62,21 +62,23 @@
       </button>
 
       <a class="navbar-brand" href="{{url_for('get_products', category_id='3')}}">
-        <img src="{{url_for('static', filename='img/mascot.gif')}}" width="30" height="30"> Handy Cart
+        <img src="{{url_for('static', filename='img/mascot.gif')}}" width="35" height="35"> Handy Cart
       </a>
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-        <form>
-              <input class="form-control mr-sm-2 dropdown-toggle" type="text" value="" placeholder="Search" id="product_search">
-              <div class="dropdown show">
-                <div class="dropdown-menu" id="search-results" style="display:none;">
-                  {% for all_product in all_products %}
-                    <a class="dropdown-item" href="{{url_for('set_product_properties', product_id=all_product.product_id, category_id=all_product.category_id, category_name=all_product.category_name)}}" style="display:none;">{{all_product.product_name}}</a>
-                  {% endfor %}
-                </div>
-              </div>
-        </form>
         <ul class="navbar-nav">
+          <li class="mr-3">
+            <form>
+                  <input class="form-control mr-sm-2 dropdown-toggle" type="text" value="" placeholder="Search" id="product_search">
+                  <div class="dropdown show">
+                    <div class="dropdown-menu" id="search-results" style="display:none;">
+                      {% for all_product in all_products %}
+                        <a class="dropdown-item" href="{{url_for('set_product_properties', product_id=all_product.product_id, category_id=all_product.category_id, category_name=all_product.category_name)}}" style="display:none;">{{all_product.product_name}}</a>
+                      {% endfor %}
+                    </div>
+                  </div>
+            </form>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('get_seller_products')}}">Products</a>
           </li>
@@ -98,7 +100,7 @@
 </body>
 <br/>
 <footer class="footer">
-  <nav id="footer" class="navbar navbar-toggleable-md navbar-inverse bg-inverse" style="position:sticky; bottom:0;background-color: #7B4E4E;;width:100%;">
+  <nav id="footer" class="navbar navbar-toggleable-md navbar-inverse bg-inverse" style="position:sticky; bottom:0;background-color: #7B4E4E !important;width:100%;">
       <a class="navbar-brand" href="{{url_for('get_products', category_id='3')}}">Copyright &copy; Handy Cart</a>
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">

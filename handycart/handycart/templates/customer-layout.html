@@ -36,12 +36,10 @@
       $('.dropdown-menu a').click(function(){
         $('#product_frequency').text($(this).text());
         $('#frequency').val($(this).attr("id"));
-        // alert($('#frequency').val());
       });
 
       $('.input_radio').on('change', function() {
          $('#price_id').val($('input[name=selected_price]:checked').val());
-        //  alert($('#price_id').val());
       });
 
       var days = []
@@ -122,26 +120,28 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <a class="navbar-brand" href="{{url_for('get_products', category_id='3')}}">
-        <img src="{{url_for('static', filename='img/mascot.gif')}}" width="30" height="30"> Handy Cart
+        <img src="{{url_for('static', filename='img/mascot.gif')}}" width="35" height="35"> Handy Cart
       </a>
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-        <form>
-              <input class="form-control mr-sm-2 dropdown-toggle" type="text" value="" placeholder="Search" id="product_search">
-              <div class="dropdown show">
-                <div class="dropdown-menu" id="search-results" style="display:none;">
-                  {% for all_product in all_products %}
-                    <a class="dropdown-item" href="{{url_for('subscribe_product', product_id=all_product.product_id, category_id=all_product.category_id, category_name=all_product.category_name)}}" style="display:none;">{{all_product.product_name}}</a>
-                  {% endfor %}
-                </div>
-              </div>
-        </form>
         <ul class="navbar-nav">
+          <li class="mr-3">
+            <form>
+                  <input class="form-control mr-sm-2 dropdown-toggle" type="text" value="" placeholder="Search" id="product_search">
+                  <div class="dropdown show">
+                    <div class="dropdown-menu" id="search-results" style="display:none;">
+                      {% for all_product in all_products %}
+                        <a class="dropdown-item" href="{{url_for('subscribe_product', product_id=all_product.product_id, category_id=all_product.category_id, category_name=all_product.category_name)}}" style="display:none;">{{all_product.product_name}}</a>
+                      {% endfor %}
+                    </div>
+                  </div>
+            </form>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('get_subscriptions')}}">Subscription</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Order</a>
+            <a class="nav-link" href="{{url_for('get_orders')}}">Order</a>
           </li>
           <li class="nav-item" style="float:right;">
             <a class="nav-link" href="{{url_for('get_profile')}}">Profile</a>

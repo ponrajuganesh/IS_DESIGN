@@ -173,7 +173,7 @@ def page_not_found(e):
 
 @app.route('/')
 def index():
-	return redirect(url_for('login'))
+	return render_template('testimonial.html')
 
 @app.route('/products')
 def get_products():
@@ -184,6 +184,13 @@ def get_products():
 	products = query_db("select * from product where category_id = ?", [request.args.get('category_id')])
 	categories = query_db("select * from category order by name")
 	return render_template('products.html', categories=categories, products=products, category_id=request.args.get('category_id'), category_name=selected_category['name'], is_seller=session['is_seller'], all_products=g.products)
+
+@app.route('/get_mockup_products')
+def get_mockup_products():
+	selected_category = query_db("select name from category where id = ?", [request.args.get('category_id')], one=True)
+	products = query_db("select * from product where category_id = ?", [request.args.get('category_id')])
+	categories = query_db("select * from category order by name")
+	return render_template('mockup_products.html', categories=categories, products=products, category_id=request.args.get('category_id'), category_name=selected_category['name'])
 
 @app.route('/get_permissions')
 def get_permissions():
@@ -402,6 +409,10 @@ def get_seller_stats():
 @app.route('/add_product')
 def add_product():
 	return render_template('add_product.html', categories=g.categories)
+
+@app.route('/get_orders')
+def get_orders():
+	return render_template('orders.html')
 
 @app.route('/logout')
 def logout():

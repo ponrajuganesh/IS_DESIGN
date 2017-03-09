@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width = device-width, initial-scale = 1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+        crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.1/js/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <title>HandiCart: Online Subscription based shopping for groceries and other items</title>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //carousel options
+            $('#carousel').carousel({
+                pause: true,
+                interval: 10000,
+            });
+        });
+    </script>
+</head>
+<body class="home-page" style="background-image: url(images/overlay2.png), url(images/overlay4.svg), linear-gradient(45deg, #f7f7f9 28%, teal 95%) !important;">
+    <!-- Nav bar starts-->
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>              <a class="navbar-brand" href="{{url_for('get_products', category_id='3')}}">
+                    <img src="{{url_for('static', filename='img/mascot.gif')}}" width="35" height="35"> Handy Cart
+                  </a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item "> <a class="nav-link" href="{{url_for('login')}}">Login </a> </li>
+                <li class="nav-item "> <a class="nav-link" href="{{url_for('register', is_seller='1')}}" active>Become a Supplier </a> </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Nav bar ends-->
+    <!-- Content starts -->
+    <div class="container">
+         <div class="row ">
+                <div class="col_6 text-center"><img src="{{url_for('static', filename='img/mascot_right.gif')}}" alt="Slurpy" ></div>
+                <div class="col_6"><blockquote> Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</blockquote></div>
+            </div>
+        <div class="row pt-4 pb-4">
+            <div class="col_6" style="display: none;">
+                <div class="login">
+                    <div class="login-screen">
+                        <div class="app-title">
+                            <h1>Login</h1>
+                        </div>
+
+                        <div class="login-form text-center">
+                            <div class="control-group">
+                                <input type="text" class="login-field" value="" placeholder="username" id="login-name">
+                                <label class="login-field-icon fui-user" for="login-name"></label>
+                            </div>
+
+                            <div class="control-group">
+                                <input type="password" class="login-field" value="" placeholder="password" id="login-pass">
+                                <label class="login-field-icon fui-lock" for="login-pass"></label>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-login-form">Login</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- login ends -->
+    <h3 class="pt-3 pb-3 text-center"> See what our patrons have to say </h3>
+    <!-- testimonials start -->
+    <div id="carousel" class="carousel slide testimonial-slider text-center" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carousel" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel" data-slide-to="1"></li>
+            <li data-target="#carousel" data-slide-to="2"></li>
+            <li data-target="#carousel" data-slide-to="3"></li>
+        </ol>
+        <div class="carousel-inner" role="listbox">
+            <div class="carousel-item active">
+                <div class="col-md-12 pt-2 pb-2">
+                    <img src="{{url_for('static', filename='img/avatar-1.jpg')}}" class="img-circle " />
+                    <div>
+                        <p>
+                            <blockquote>
+                                <h3><i>One</i></h3> of the best web applications right now!<br>
+                                <small><strong>Vulputate M., Dolor</strong></small></blockquote>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="col-md-12 pt-2 pb-2">
+                    <img src="{{url_for('static', filename='img/avatar-2.jpg')}}" class="img-circle" />
+                    <div>
+                        <p>
+                            <blockquote>
+                                <h3><i>This</i></h3> is better than Amazon Dash!<br><small><strong>Vulputate M., Dolor</strong></small></blockquote>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="col-md-12 pt-2 pb-2">
+                    <img src="{{url_for('static', filename='img/avatar-3.jpg')}}" class="img-circle" />
+                    <div>
+                        <p>
+                            <blockquote>
+                                <h3><i>I</i></h3> Love it !!! <br>
+                                <small><strong>Vulputate M., Dolor</strong></small></blockquote>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="col-md-12 pt-2 pb-2">
+
+                    <div class="pt-4 pb-5">
+                        <p> Check out our awesome list of products!</p>
+                        <a class="btn btn-raised" type='button' title="Click to know more" style="cursor: pointer;" href="{{url_for('get_mockup_products', category_id='3')}}">Check it out!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- testimonials end -->
+    <!-- product lineup -->
+    <!-- product lineup -->
+
+    <div class="text-center col_12" style="color: black"> Copyright &copy; HandiCart </div>
+</body>
+
+</html>
