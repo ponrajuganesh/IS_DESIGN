@@ -118,6 +118,12 @@
   </div>
 </div>
 
+<script type="text/javascript">
+  $( document ).ready(function() {
+    $("#footer").removeAttr("style");
 
+    $("#footer").attr("style", "bottom:0; margin:0; position:sticky; width:100%;")
+  });
+</script>
 
 {% endblock %}
