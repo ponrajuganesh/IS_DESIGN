@@ -34,7 +34,6 @@
     overflow-y: auto;
 }
 
-
 @media (max-width: 768px) {
     /* For mobile phones: */
     [class*="col_"] {
