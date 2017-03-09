@@ -163,7 +163,9 @@ def register():
 @app.before_request
 def before_request():
 	g.categories = None
+	g.products = None
 	g.categories = query_db('select * from category order by name')
+	g.products = query_db('select product.id as product_id, product.name as product_name, category.id as category_id, category.name as category_name from product, category where product.category_id = category.id order by product.name')
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -181,7 +183,7 @@ def get_products():
 	selected_category = query_db("select name from category where id = ?", [request.args.get('category_id')], one=True)
 	products = query_db("select * from product where category_id = ?", [request.args.get('category_id')])
 	categories = query_db("select * from category order by name")
-	return render_template('products.html', categories=categories, products=products, category_id=request.args.get('category_id'), category_name=selected_category['name'], is_seller=session['is_seller'])
+	return render_template('products.html', categories=categories, products=products, category_id=request.args.get('category_id'), category_name=selected_category['name'], is_seller=session['is_seller'], all_products=g.products)
 
 @app.route('/get_permissions')
 def get_permissions():
@@ -218,14 +220,14 @@ def subscribe_product():
 
 	product = query_db("select * from product where id = ?", [product_id], one=True)
 	unit = query_db("select name from units where id = ?", [product['units_id']], one=True)
-	return render_template('subscribe.html', selected_quantity=quantity, quantities=quantities, product=product, prices=prices, units_name=unit['name'], category_id=request.args.get('category_id'), category_name=request.args.get('category_name'), categories=g.categories)
+	return render_template('subscribe.html', selected_quantity=quantity, quantities=quantities, product=product, prices=prices, units_name=unit['name'], category_id=request.args.get('category_id'), category_name=request.args.get('category_name'), categories=g.categories, all_products=g.products)
 
 @app.route('/set_product_properties')
 def set_product_properties():
 	product_id, category_id = request.args.get('product_id'), request.args.get('category_id')
 	product = query_db("select * from product where id = ?", [product_id], one=True)
 	category_name = query_db("select name from category where id = ?", [category_id], one=True)
-	return render_template('set-product-properties.html', categories=g.categories, product=product, category_name=category_name['name'], category_id=category_id, units_name=UNITS[int(product['units_id'])], is_seller=session['is_seller'])
+	return render_template('set-product-properties.html', categories=g.categories, product=product, category_name=category_name['name'], category_id=category_id, units_name=UNITS[int(product['units_id'])], is_seller=session['is_seller'], all_products=g.products)
 
 @app.route('/add_subscription')
 def add_subscription():
@@ -288,7 +290,7 @@ def get_subscriptions():
 
 		processed_subscriptions.append(processed_subscription)
 
-	return render_template('subscription_list.html', subscriptions=processed_subscriptions)
+	return render_template('subscription_list.html', subscriptions=processed_subscriptions, all_products=g.products)
 
 @app.route('/add_product_properties')
 def add_product_properties():
@@ -315,7 +317,7 @@ def get_profile():
 		user = query_db("select * from user where id = ?", [session['user_id']], one=True)
 
 	address = query_db("select * from address where user_id = ?", [session['user_id']], one=True)
-	return render_template('profile.html', is_seller=session['is_seller'], user=user, address=address)
+	return render_template('profile.html', is_seller=session['is_seller'], user=user, address=address, all_products=g.products)
 
 @app.route('/update_profile')
 def update_profile():
@@ -376,13 +378,10 @@ def get_seller_products():
 
 			product_info[price['product_id']]['prices'].append(price_info)
 
-
-
-
 	for product_id in product_info:
 		customized_product_info.append(product_info[product_id])
 
-	return render_template('seller_products.html', products=customized_product_info, seller_name=seller['name'])
+	return render_template('seller_products.html', products=customized_product_info, seller_name=seller['name'], all_products=g.products)
 
 @app.route('/get_seller_stats')
 def get_seller_stats():
@@ -398,8 +397,11 @@ def get_seller_stats():
 	products_string = ','.join(products)
 	counts_string = ','.join(str(count) for count in counts)
 
-	return render_template('seller_stats.html', products_string=products_string, counts_string=counts_string)
+	return render_template('seller_stats.html', products_string=products_string, counts_string=counts_string, all_products=g.products)
 
+@app.route('/add_product')
+def add_product():
+	return render_template('add_product.html', categories=g.categories)
 
 @app.route('/logout')
 def logout():
